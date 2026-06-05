@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DataPress — Turn your data files into APIs</title>
+
+  <!-- reveal.js core + theme (vendored locally) -->
+  <link rel="stylesheet" href="vendor/reveal/dist/reveal.css">
+  <link rel="stylesheet" href="vendor/reveal/dist/theme/black.css" id="theme">
+  <link rel="stylesheet" href="vendor/reveal/plugin/highlight/monokai.css">
+
+  <style>
+    :root {
+      --dp-orange: #f5a623;
+      --dp-yellow: #ffd34e;
+      --dp-blue: #4aa3ff;
+      --dp-bg: #15171c;
+      --dp-bg2: #1d2027;
+      --dp-text: #e8eaed;
+      --dp-muted: #9aa0aa;
+    }
+
+    .reveal { font-family: "Inter", "Helvetica Neue", Arial, sans-serif; color: var(--dp-text); }
+    .reveal .slides section { text-align: left; }
+    .reveal h1, .reveal h2, .reveal h3 { color: #fff; text-transform: none; letter-spacing: -0.01em; font-weight: 700; }
+    .reveal h1 { font-size: 2.5em; }
+    .reveal h2 { font-size: 1.7em; }
+    .reveal h3 { font-size: 1.2em; color: var(--dp-yellow); }
+    .reveal section { background: transparent; }
+    .reveal .backgrounds { background: var(--dp-bg); }
+
+    .reveal em, .reveal .accent { color: var(--dp-orange); font-style: normal; }
+    .reveal strong { color: var(--dp-yellow); }
+    .reveal a { color: var(--dp-blue); }
+
+    .reveal .muted { color: var(--dp-muted); }
+    .reveal small { color: var(--dp-muted); font-size: 0.6em; }
+
+    .center { text-align: center !important; }
+    .center h1, .center h2 { text-align: center; }
+
+    /* Title slide */
+    .title-eyebrow {
+      color: var(--dp-orange);
+      letter-spacing: 0.35em;
+      font-size: 0.55em;
+      text-transform: uppercase;
+      margin-bottom: 0.4em;
+    }
+    .title-sub { color: var(--dp-muted); font-size: 0.85em; max-width: 24em; margin: 0.6em auto 0; text-align: center; display: inline-block; }
+    .reveal section.title-slide h1 { font-size: 2em; margin: 0.1em 0; }
+    .reveal section.title-slide .title-sub { font-size: 0.78em; }
+    .reveal section.title-slide .pills { margin-top: 0.8em; }
+    .pill {
+      display: inline-block; padding: 0.25em 0.8em; margin: 0.25em;
+      border: 1px solid rgba(245,166,35,0.5); border-radius: 999px;
+      font-size: 0.5em; color: var(--dp-yellow); background: rgba(245,166,35,0.08);
+    }
+
+    /* Cards grid */
+    .cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8em; margin-top: 0.4em; }
+    .cards.three { grid-template-columns: repeat(3, 1fr); }
+    .card {
+      background: var(--dp-bg2); border: 1px solid #2a2e37; border-radius: 14px;
+      padding: 0.8em 1em; font-size: 0.62em;
+    }
+    .card h3 { margin: 0 0 0.35em; font-size: 1.05em; }
+    .card p { margin: 0; color: var(--dp-muted); line-height: 1.4; }
+
+    .reveal ul { font-size: 0.85em; }
+    .reveal li { margin-bottom: 0.4em; }
+    .lead { font-size: 1.15em; line-height: 1.5; }
+
+    /* Before / after */
+    .ba { display: grid; grid-template-columns: 1fr 1fr; gap: 1em; margin-top: 0.5em; }
+    .ba .col { background: var(--dp-bg2); border-radius: 14px; padding: 0.6em 1em; font-size: 0.62em; }
+    .ba .before { border: 1px solid #5a2a2a; }
+    .ba .after { border: 1px solid #2a5a3a; }
+    .ba h3 { font-size: 1em; }
+    .ba .before h3 { color: #ff7a7a; }
+    .ba .after h3 { color: #6ee7a0; }
+
+    .reveal pre { box-shadow: none; width: 100%; font-size: 0.5em; }
+    .reveal pre code { border-radius: 10px; padding: 1em; max-height: none; }
+
+    .kicker { color: var(--dp-orange); font-weight: 600; font-size: 0.7em; letter-spacing: 0.08em; text-transform: uppercase; }
+
+    table.cmp { font-size: 0.5em; width: 100%; border-collapse: collapse; }
+    table.cmp th, table.cmp td { padding: 0.4em 0.6em; border-bottom: 1px solid #2a2e37; }
+    table.cmp th { color: var(--dp-yellow); text-align: left; }
+    table.cmp td.lbl { color: var(--dp-muted); }
+
+    .reveal .footer { position: fixed; bottom: 12px; left: 18px; font-size: 12px; color: var(--dp-muted); z-index: 30; }
+    .reveal .slide-number { color: var(--dp-muted); }
+
+    .big-stat { font-size: 2.2em; color: var(--dp-orange); font-weight: 800; line-height: 1; }
+    .stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1em; text-align: center; margin-top: 0.6em; }
+    .stat-grid .muted { font-size: 0.6em; }
+
+    /* Tighter layout for content-heavy slides */
+    .reveal section.tight .kicker { font-size: 0.6em; }
+    .reveal section.tight h2 { font-size: 1.2em; margin: 0.1em 0 0.2em; }
+    .reveal section.tight .lead { font-size: 0.85em; margin: 0.25em 0; }
+    .reveal section.tight ul { font-size: 0.68em; margin: 0.2em 0; }
+    .reveal section.tight li { margin-bottom: 0.2em; }
+    .reveal section.tight p.muted { font-size: 0.7em !important; margin: 0.3em 0 0; }
+  </style>
+</head>
+<body>
+<div class="reveal">
+  <div class="footer">DataPress · datap-rs</div>
+  <div class="slides">
+
+    <!-- 1. Title -->
+    <section class="center title-slide" data-auto-animate>
+      <div class="title-eyebrow">Data files → HTTP APIs</div>
+      <h1 data-id="logo" style="color: var(--dp-orange);">DataPress</h1>
+      <p class="title-sub">Turn the Parquet and Delta files you already have into fast, typed HTTP APIs — without standing up a warehouse or writing a service layer.</p>
+      <div class="pills" style="margin-top: 0.8em;">
+        <span class="pill">Parquet</span>
+        <span class="pill">Delta</span>
+        <span class="pill">S3</span>
+        <span class="pill">JSON + Arrow</span>
+        <span class="pill">Python · Rust</span>
+      </div>
+    </section>
+
+    <!-- 2. The problem -->
+    <section class="tight">
+      <span class="kicker">The problem</span>
+      <h2>You have the data. Getting to it is the hard part.</h2>
+      <p class="lead muted">Curated datasets land in object storage as Parquet or Delta. But every team that wants them has to build a way in.</p>
+      <ul>
+        <li>Each app re-writes a <em>Flask / FastAPI wrapper</em> around the same files</li>
+        <li>Schemas get <em>hand-coded</em> and drift out of sync</li>
+        <li>Data gets <em>copied</em> into a database "just to serve it"</li>
+        <li>A full <em>warehouse</em> is overkill for "publish these files"</li>
+      </ul>
+      <p class="muted" style="font-size:0.8em;">The gap is a thin, dependable <strong>publication layer</strong> — and it keeps getting rebuilt by hand.</p>
+    </section>
+
+    <!-- 3. What it is -->
+    <section class="center">
+      <span class="kicker">The idea</span>
+      <h2>One config file. A production API.</h2>
+      <p class="lead" style="max-width: 22em; margin: 0.4em auto;">Point DataPress at your files. It infers the schema and serves a versioned HTTP API in seconds.</p>
+      <pre><code class="language-bash" data-trim>
+pip install datap-rs        # or: cargo install datapress
+      </code></pre>
+      <p class="muted" style="font-size:0.85em;">No data movement. No service to maintain. No schema to hand-write.</p>
+    </section>
+
+    <!-- 4. Before / After -->
+    <section>
+      <span class="kicker">Before &amp; after</span>
+      <h2>From bespoke glue to a data product</h2>
+      <div class="ba">
+        <div class="col before">
+          <h3>Today</h3>
+          <ul style="font-size:1em;">
+            <li>Custom API service per dataset</li>
+            <li>Hand-coded schemas &amp; SQL</li>
+            <li>Export jobs &amp; data copies</li>
+            <li>Ad-hoc auth, no metrics</li>
+            <li>Weeks of engineering</li>
+          </ul>
+        </div>
+        <div class="col after">
+          <h3>With DataPress</h3>
+          <ul style="font-size:1em;">
+            <li>One server, many datasets</li>
+            <li>Schema inferred automatically</li>
+            <li>Serve files where they live</li>
+            <li>Built-in auth, metrics, probes</li>
+            <li>Minutes to publish</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Who it helps -->
+    <section>
+      <span class="kicker">Who it helps</span>
+      <h2>One layer, four audiences</h2>
+      <div class="cards">
+        <div class="card">
+          <h3>Data engineers</h3>
+          <p>Publish curated Parquet/Delta straight from pipelines — no bespoke API services to own.</p>
+        </div>
+        <div class="card">
+          <h3>App developers</h3>
+          <p>A stable HTTP contract instead of embedding storage readers and SQL engines in every app.</p>
+        </div>
+        <div class="card">
+          <h3>Analytics engineers</h3>
+          <p>Arrow-native bulk pulls for notebooks and jobs, plus lightweight JSON for inspection.</p>
+        </div>
+        <div class="card">
+          <h3>Business teams</h3>
+          <p>Governed files become reusable, documented, discoverable data products.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. What you get -->
+    <section>
+      <span class="kicker">Capabilities</span>
+      <h2>A real API, not just a file dump</h2>
+      <div class="cards three">
+        <div class="card"><h3>Discover</h3><p>List datasets &amp; inspect schemas at runtime.</p></div>
+        <div class="card"><h3>Query</h3><p>Filter, sort, group, aggregate, paginate — over HTTP JSON.</p></div>
+        <div class="card"><h3>Count</h3><p>Count matching rows without fetching them.</p></div>
+        <div class="card"><h3>Stream</h3><p>Arrow IPC for fast, bulk analytics pulls.</p></div>
+        <div class="card"><h3>Reload</h3><p>Swap in new data without restarting.</p></div>
+        <div class="card"><h3>Secure</h3><p>OIDC / OAuth2 bearer scopes when you need them.</p></div>
+      </div>
+    </section>
+
+    <!-- 7. Two engines -->
+    <section>
+      <span class="kicker">Flexibility</span>
+      <h2>Two engines, one identical API</h2>
+      <p class="muted" style="font-size:0.85em;">Same request and response shapes — switch engines with a single config line and compare under your own workload.</p>
+      <table class="cmp">
+        <tr><th></th><th>DuckDB</th><th>Arrow + DataFusion</th></tr>
+        <tr><td class="lbl">Best at</td><td>Rich SQL, joins, huge/growing data</td><td>Low-latency lookups, dense filters</td></tr>
+        <tr><td class="lbl">Storage</td><td>Lazy reads from object storage</td><td>Resident Arrow batches in RAM</td></tr>
+        <tr><td class="lbl">Startup</td><td>Milliseconds</td><td>Builds an in-memory index</td></tr>
+        <tr><td class="lbl">Footprint</td><td>Bundled engine</td><td>Lean, pure-Rust static binary</td></tr>
+      </table>
+      <p class="muted" style="font-size:0.8em; margin-top:0.6em;">Pick the right default, keep the option open — no rewrite required.</p>
+    </section>
+
+    <!-- 8. Why it's fast / trustworthy -->
+    <section>
+      <span class="kicker">Why it holds up</span>
+      <h2>Fast by construction, operable by default</h2>
+      <div class="cards">
+        <div class="card">
+          <h3>Built for speed</h3>
+          <p>Rust + actix-web, columnar formats, mature query engines, projection &amp; predicate pushdown, Arrow IPC to skip JSON overhead.</p>
+        </div>
+        <div class="card">
+          <h3>Runs like a service</h3>
+          <p>Liveness/readiness probes, version metadata, graceful shutdown, Prometheus metrics, hot reloads.</p>
+        </div>
+        <div class="card">
+          <h3>Meets you where you are</h3>
+          <p>Local files, S3-compatible buckets, Parquet partitions, Delta tables — through one predictable API.</p>
+        </div>
+        <div class="card">
+          <h3>Easy to adopt</h3>
+          <p>A pip wheel for Python, a single binary for ops, embedded docs &amp; Swagger for consumers.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Use cases -->
+    <section>
+      <span class="kicker">Where it fits</span>
+      <h2>Concrete use cases</h2>
+      <ul>
+        <li><strong>Internal data products</strong> — publish governed datasets for many teams to reuse</li>
+        <li><strong>Powering app features</strong> — back search, filters, and tables with a stable JSON API</li>
+        <li><strong>Notebook &amp; pipeline feeds</strong> — Arrow IPC straight into Polars, DuckDB, pandas</li>
+        <li><strong>Replacing one-off services</strong> — retire bespoke Flask/FastAPI wrappers</li>
+        <li><strong>Lake-side serving</strong> — expose S3/Delta without copying into a database</li>
+      </ul>
+    </section>
+
+    <!-- 10. From Python in seconds -->
+    <section>
+      <span class="kicker">How simple it is</span>
+      <h2>Launch from Python</h2>
+      <pre><code class="language-python" data-trim data-line-numbers>
+from datap_rs.datapress import DataPress, DataPressConfig, DatasetConfig
+
+server = DataPress(
+    DataPressConfig(backend="duckdb", port=8000),
+    datasets=[DatasetConfig(name="events",
+                            source="s3://lake/events/*.parquet")],
+)
+# server.run() → a typed HTTP API over your lake data
+      </code></pre>
+      <p class="muted" style="font-size:0.85em;">Configure in Python, or declare datasets in a single <code>datasets.toml</code> and run the binary.</p>
+    </section>
+
+    <!-- 11. Positioning -->
+    <section class="center">
+      <span class="kicker">Where it sits</span>
+      <h2>Not a warehouse. Not a BI tool.</h2>
+      <p class="lead" style="max-width: 24em; margin: 0.6em auto;">DataPress is the <em>thin, fast publication layer</em> between your columnar data and the people and systems that consume it.</p>
+      <p class="muted">It complements your lakehouse and database — it doesn't replace them.</p>
+    </section>
+
+    <!-- 12. Demo handoff -->
+    <section class="center" data-background-gradient="linear-gradient(135deg, #1d2027 0%, #2a1d0e 100%)">
+      <div class="title-eyebrow">Let's see it</div>
+      <h1 style="color: var(--dp-orange);">Live demo</h1>
+      <p class="title-sub">Point it at a real dataset and query it over HTTP — JSON for apps, Arrow for analytics.</p>
+      <p class="muted" style="margin-top:1.4em; font-size:0.8em;"><a href="https://pypi.org/project/datap-rs/">datap-rs</a> · <a href="https://docs.datap-rs.org">docs.datap-rs.org</a></p>
+    </section>
+
+  </div>
+</div>
+
+  <!-- reveal.js core + plugins (vendored locally) -->
+  <script src="vendor/reveal/dist/reveal.js"></script>
+  <script src="vendor/reveal/plugin/highlight/highlight.js"></script>
+  <script src="vendor/reveal/plugin/notes/notes.js"></script>
+<script>
+  Reveal.initialize({
+    hash: true,
+    slideNumber: 'c/t',
+    transition: 'slide',
+    transitionSpeed: 'default',
+    controls: true,
+    progress: true,
+    center: false,
+    plugins: [ RevealHighlight, RevealNotes ],
+  });
+</script>
+</body>
+</html>
