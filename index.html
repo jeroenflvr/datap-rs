@@ -134,9 +134,11 @@
         <span class="pill">Iceberg</span>
         <span class="pill">Ducklake</span>
         <span class="pill">S3</span>
+        <span class="pill">HTTP API</span>
         <span class="pill">JSON + Arrow</span>
         <span class="pill">Python · Rust</span>
         <span class="pill">OIDC / OAuth2</span>
+        <span class="pill">Streaming</span>
       </div>
     </section>
 
@@ -241,10 +243,12 @@ pip install datap-rs        # or: cargo install datapress
         <tr><th></th><th>DuckDB</th><th>Arrow + DataFusion</th></tr>
         <tr><td class="lbl">Best at</td><td>Rich SQL, joins, huge/growing data</td><td>Low-latency lookups, dense filters</td></tr>
         <tr><td class="lbl">Storage</td><td>Lazy reads from object storage</td><td>Resident Arrow batches in RAM</td></tr>
+        <tr><td class="lbl">Data held</td><td>Lazy — streamed on demand, scales past RAM</td><td>Eager — cached in memory, warm and ready</td></tr>
+        <tr><td class="lbl">Use when</td><td>Datasets are large or grow over time</td><td>Consumers need ms latency — e.g. market tickers</td></tr>
         <tr><td class="lbl">Startup</td><td>Milliseconds</td><td>Builds an in-memory index</td></tr>
         <tr><td class="lbl">Footprint</td><td>Bundled engine</td><td>Lean, pure-Rust static binary</td></tr>
       </table>
-      <p class="muted" style="font-size:0.8em; margin-top:0.6em;">Pick the right default, keep the option open — no rewrite required.</p>
+      <p class="muted" style="font-size:0.8em; margin-top:0.6em;">Go lazy for big or growing data, eager (in-memory) when every millisecond counts — pick the right default, keep the option open, no rewrite required.</p>
     </section>
 
     <!-- 8. Why it's fast / trustworthy -->
