@@ -127,10 +127,12 @@
     <section class="center title-slide" data-auto-animate>
       <div class="title-eyebrow">DataPress: Data files → HTTP APIs</div>
       <img data-id="logo" src="datapress-logo-yellow.svg" alt="DataPress" style="height: 3em; display: block; margin: 0.7em auto 0.2em;">
-      <p class="title-sub">Turn the Parquet and Open Table Format files (delta, iceberg, ducklake, ..) you already have into fast, typed HTTP APIs — without standing up a warehouse or writing a service layer.</p>
+      <p class="title-sub">Turn the Parquet and open table formats (delta, iceberg, ducklake, ..) data you already have into fast, typed HTTP APIs — without standing up a warehouse or writing a service layer.</p>
       <div class="pills" style="margin-top: 0.8em;">
         <span class="pill">Parquet</span>
         <span class="pill">Delta</span>
+        <span class="pill">Iceberg</span>
+        <span class="pill">Ducklake</span>
         <span class="pill">S3</span>
         <span class="pill">JSON + Arrow</span>
         <span class="pill">Python · Rust</span>
@@ -142,7 +144,7 @@
     <section class="tight">
       <span class="kicker">The problem</span>
       <h2>You have the data. Getting to it is the hard part.</h2>
-      <p class="lead muted">Curated datasets land in object storage as Parquet or Delta. But before anyone can use them, someone has to build and run a service — usually a separate team the owners hand off to.</p>
+      <p class="lead muted">Curated datasets land in object storage as Parquet or open table formats. But before anyone can use them, someone has to build and run a service — usually a separate team the owners hand off to.</p>
       <ul>
         <li>Owners <em>hand off</em> to an engineering team to build a <em>Flask / FastAPI wrapper</em></li>
         <li>Schemas get <em>hand-coded</em> and drift out of sync</li>
@@ -199,7 +201,7 @@ pip install datap-rs        # or: cargo install datapress
       <div class="cards">
         <div class="card">
           <h3>Data engineers</h3>
-          <p>Publish curated Parquet/Delta straight from pipelines — own your domain's data product without a central team in the loop.</p>
+          <p>Publish curated data in Parquet or open table formats straight from pipelines — own your domain's data product without a central team in the loop.</p>
         </div>
         <div class="card">
           <h3>App developers</h3>
@@ -260,7 +262,7 @@ pip install datap-rs        # or: cargo install datapress
         </div>
         <div class="card">
           <h3>Meets you where you are</h3>
-          <p>Local files, S3-compatible buckets, Parquet partitions, Delta tables — through one predictable API.</p>
+          <p>Local files, S3-compatible buckets, Parquet partitions, Lakehouse/Open Table Formats — through one predictable API.</p>
         </div>
         <div class="card">
           <h3>Easy to adopt</h3>
@@ -278,7 +280,7 @@ pip install datap-rs        # or: cargo install datapress
         <li><strong>Powering app features</strong> — back search, filters, and tables with a stable JSON API</li>
         <li><strong>Notebook &amp; pipeline feeds</strong> — Arrow IPC straight into Polars, DuckDB, pandas</li>
         <li><strong>Replacing one-off services</strong> — retire bespoke Flask/FastAPI wrappers</li>
-        <li><strong>Lake-side serving</strong> — expose S3/Delta without copying into a database</li>
+        <li><strong>Lake-side serving</strong> — expose S3/lakehouse data without copying into a database</li>
       </ul>
     </section>
 
