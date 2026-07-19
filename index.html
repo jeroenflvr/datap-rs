@@ -253,7 +253,43 @@ pip install datap-rs        # or: cargo install datapress
       <p class="muted" style="font-size:0.8em; margin-top:0.6em;">Go lazy for big or growing data, eager (in-memory) when every millisecond counts — pick the right default, keep the option open, no rewrite required.</p>
     </section>
 
-    <!-- 8. Why it's fast / trustworthy -->
+    <!-- 8. Materialized datasets -->
+    <section class="tight">
+      <span class="kicker">Materialized datasets</span>
+      <h2>Precompute once. Serve instantly. Refresh automatically.</h2>
+      <p class="muted" style="font-size:0.85em;">Declare a dataset as a <code>SELECT</code> over other datasets. DataPress runs the SQL, keeps the result in memory (or on storage), and serves it exactly like a Parquet file — <em>no query-path branching</em>.</p>
+      <div class="ba">
+        <div class="col" style="border:1px solid #2a5a3a;">
+          <h3 style="color:#6ee7a0;">Save processing time</h3>
+          <ul style="font-size:0.95em;">
+            <li>Joins, aggregations &amp; window functions run <em>once</em>, not per request</li>
+            <li>Chain query datasets on top of query datasets</li>
+            <li>Optional equality index &amp; <code>sort_by</code> for fast lookups &amp; pruning</li>
+          </ul>
+        </div>
+        <div class="col" style="border:1px solid #2a4a5a;">
+          <h3 style="color:#6ecbe7;">Fresh when upstream changes</h3>
+          <ul style="font-size:0.95em;">
+            <li><code>on_upstream_reload</code> — rebuild when a dependency publishes</li>
+            <li>Scheduled <code>interval</code> refresh with jitter &amp; backoff</li>
+            <li>Cascade in topological order; <em>keep-last-good</em> on failure</li>
+          </ul>
+        </div>
+      </div>
+      <pre style="margin-top:0.4em;"><code class="language-toml" data-trim data-line-numbers>
+[[dataset]]
+name = "state_daily_severity"
+  [dataset.source]
+  kind       = "query"
+  sql        = "SELECT state, avg(severity) FROM accidents GROUP BY state"
+  depends_on = ["accidents"]
+  [dataset.refresh]
+  interval           = "15m"   # scheduled re-materialization
+  on_upstream_reload = true    # rebuild when "accidents" publishes
+      </code></pre>
+    </section>
+
+    <!-- 9. Why it's fast / trustworthy -->
     <section class="tight">
       <span class="kicker">Why it holds up</span>
       <h2>Fast by construction, operable by default</h2>
@@ -277,7 +313,7 @@ pip install datap-rs        # or: cargo install datapress
       </div>
     </section>
 
-    <!-- 9. Use cases -->
+    <!-- 10. Use cases -->
     <section>
       <span class="kicker">Where it fits</span>
       <h2>Concrete use cases</h2>
@@ -290,7 +326,7 @@ pip install datap-rs        # or: cargo install datapress
       </ul>
     </section>
 
-    <!-- 10. From Python in seconds -->
+    <!-- 11. From Python in seconds -->
     <section>
       <span class="kicker">How simple it is</span>
       <h2>Launch from Python</h2>
@@ -308,7 +344,7 @@ server = DataPress(
       <p class="muted" style="font-size:0.85em;">Configure in Python, or declare datasets in a single <code>datasets.toml</code> and run the binary — one instance per dataset, or many datasets per instance.</p>
     </section>
 
-    <!-- 11. Positioning -->
+    <!-- 12. Positioning -->
     <section class="center">
       <span class="kicker">Where it sits</span>
       <h2>Not a warehouse. Not a BI tool.</h2>
@@ -316,7 +352,7 @@ server = DataPress(
       <p class="muted">It complements your lakehouse and database, and lets each domain publish its own data — it doesn't replace them.</p>
     </section>
 
-    <!-- 12. Demo handoff -->
+    <!-- 13. Demo handoff -->
     <section class="center" data-background-gradient="linear-gradient(135deg, #1d2027 0%, #2a1d0e 100%)">
       <div class="title-eyebrow">Let's see it</div>
       <h2 style="color: var(--dp-orange); margin: 0.1em 0 0.3em; font-size: 1.3em;">Live demo</h2>
